@@ -30,7 +30,7 @@ To visualize a single mask with matplotlib, run:
 ```bash
 python scripts/visualize_mask.py --mask_path ('path to mask here')
 ```
-Only the centers will appear for masks that have a center, and only boundaries will appear for masks without a center. Closing the matplotlib window will lead to the np.unique() values to be printed to terminal console.
+Closing the matplotlib window will lead to the np.unique() values to be printed to terminal console.
 
 
 # (From Original Repo) U-Net: Semantic segmentation with PyTorch
