@@ -1,4 +1,7 @@
 # PytorchUnetVeinSegmentation
+Cloned and modified from: 
+[https://github.com/milesial/Pytorch-UNet/tree/master?tab=readme-ov-file](https://github.com/milesial/Pytorch-UNet/tree/master?tab=readme-ov-file)
+
 Usage: data should already be loaded in the data/imgs folder and data/masks folder.
 
 Directly uploaded for now since currently don't have that much data, but in the future can load data locally with the following procedure:
