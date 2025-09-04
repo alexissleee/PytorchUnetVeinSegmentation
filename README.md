@@ -33,8 +33,7 @@ python scripts/visualize_mask.py --mask_path ('path to mask here')
 Only the centers will appear for masks that have a center, and only boundaries will appear for masks without a center. Closing the matplotlib window will lead to the np.unique() values to be printed to terminal console.
 
 
-Old:
-# U-Net: Semantic segmentation with PyTorch
+# (From Original Repo) U-Net: Semantic segmentation with PyTorch
 <a href="#"><img src="https://img.shields.io/github/actions/workflow/status/milesial/PyTorch-UNet/main.yml?logo=github&style=for-the-badge" /></a>
 <a href="https://hub.docker.com/r/milesial/unet"><img src="https://img.shields.io/badge/docker%20image-available-blue?logo=Docker&style=for-the-badge" /></a>
 <a href="https://pytorch.org/"><img src="https://img.shields.io/badge/PyTorch-v1.13+-red.svg?logo=PyTorch&style=for-the-badge" /></a>
