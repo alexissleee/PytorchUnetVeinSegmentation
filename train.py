@@ -19,6 +19,9 @@ from unet import UNet
 from utils.data_loading import BasicDataset, CarvanaDataset
 from utils.dice_score import dice_loss
 
+import numpy as np
+import cv2
+
 dir_img = Path('./data/imgs/')
 dir_mask = Path('./data/masks/')
 dir_checkpoint = Path('./checkpoints/')
@@ -37,6 +40,7 @@ def train_model(
         weight_decay: float = 1e-8,
         momentum: float = 0.999,
         gradient_clipping: float = 1.0,
+        class_weights=None
 ):
     # 1. Create dataset
     try:
@@ -78,7 +82,7 @@ def train_model(
                               lr=learning_rate, weight_decay=weight_decay, momentum=momentum, foreach=True)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', patience=5)  # goal: maximize Dice score
     grad_scaler = torch.cuda.amp.GradScaler(enabled=amp)
-    criterion = nn.CrossEntropyLoss() if model.n_classes > 1 else nn.BCEWithLogitsLoss()
+    criterion = nn.CrossEntropyLoss(weight=class_weights.to(device) if class_weights is not None else None) if model.n_classes > 1 else nn.BCEWithLogitsLoss()
     global_step = 0
 
     # 5. Begin training
@@ -209,6 +213,23 @@ if __name__ == '__main__':
         logging.info(f'Model loaded from {args.load}')
 
     model.to(device=device)
+
+    # use class weighting in CrossEntropyLoss
+    mask_files = list(dir_mask.glob("*.png"))
+    pixel_counts = np.zeros(model.n_classes, dtype=np.float64)
+
+    for mask_file in mask_files:
+        mask = cv2.imread(str(mask_file), cv2.IMREAD_UNCHANGED)
+        values, counts = np.unique(mask, return_counts=True)
+        for v, c in zip(values, counts):
+            pixel_counts[int(v)] += c
+    
+    weights = 1.0 / pixel_counts
+    # normalize, maybe delete later
+    weights = weights / weights.sum()
+
+    weights_tensor = torch.tensor(weights, dtype=torch.float32)
+
     try:
         train_model(
             model=model,
@@ -218,7 +239,8 @@ if __name__ == '__main__':
             device=device,
             img_scale=args.scale,
             val_percent=args.val / 100,
-            amp=args.amp
+            amp=args.amp,
+            class_weights=weights_tensor
         )
     except torch.cuda.OutOfMemoryError:
         logging.error('Detected OutOfMemoryError! '

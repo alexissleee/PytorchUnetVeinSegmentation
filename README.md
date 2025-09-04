@@ -33,7 +33,7 @@ To visualize a single mask with matplotlib, run:
 ```bash
 python scripts/visualize_mask.py --mask_path ('path to mask here')
 ```
-Closing the matplotlib window will lead to the np.unique() values to be printed to terminal console.
+Closing the matplotlib window will lead to the counts of the np.unique() values to be printed to terminal console.
 
 
 # (From Original Repo) U-Net: Semantic segmentation with PyTorch
