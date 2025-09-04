@@ -3,21 +3,19 @@ Usage: data should already be loaded in the data/imgs folder and data/masks fold
 
 Directly uploaded for now since currently don't have that much data, but in the future can load data locally with the following procedure:
 
-1. [Download the folder (i.e., 'OA', 'ICA', 'ICA2', etc.) into the root directory of your repository.]
+1. Download the folder (i.e., 'OA', 'ICA', 'ICA2', etc.) into the root directory of your repository.
 
-2. [Make sure the images are saved as bmp files inside an 'imgs' folder within, and the masks as pngs inside a 'masks' folder. Ensure your centers are saved into a 'centers.csv' file, and that the top row's first two columns are labeled 'x' and 'y'.]
+2. Make sure the images are saved as bmp files inside an 'imgs' folder within, and the masks as pngs inside a 'masks' folder. Ensure your centers are saved into a 'centers.csv' file, and that the top row's first two columns are labeled 'x' and 'y'.
 
-3. [Run the following script for all of ('OA', 'ICA', 'ICA2', etc.):
+3. Run the following script for all of ('OA', 'ICA', 'ICA2', etc.):
 ```bash
 python scripts/rename_masks.py --folder_path ('OA', 'ICA', 'ICA2', etc.)
 ```
-]
 
-4. [Run the following script next for all of ('OA', 'ICA', 'ICA2', etc.):
+4. Run the following script next for all of ('OA', 'ICA', 'ICA2', etc.):
 ```bash
 python scripts/load_data_to_data.py --input_folder ('OA', 'ICA', 'ICA2', etc.)
 ```
-]
 
 
 To train, run: 
