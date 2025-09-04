@@ -1,5 +1,7 @@
 *.pyc
-data/
+ICA/
+ICA2/
+OA/
 __pycache__/
 checkpoints/
 *.pth
@@ -7,6 +9,4 @@ checkpoints/
 venv/
 .idea/
 wandb/
-ICA/
-OA/
-ICA2/
+*.DS_Store

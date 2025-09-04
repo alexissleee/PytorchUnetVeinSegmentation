@@ -1,5 +1,41 @@
+# PytorchUnetVeinSegmentation
+Usage: data should already be loaded in the data/imgs folder and data/masks folder.
+
+Directly uploaded for now since currently don't have that much data, but in the future can load data locally with the following procedure:
+
+1. [Download the folder (i.e., 'OA', 'ICA', 'ICA2', etc.) into the root directory of your repository.]
+
+2. [Make sure the images are saved as bmp files inside an 'imgs' folder within, and the masks as pngs inside a 'masks' folder. Ensure your centers are saved into a 'centers.csv' file, and that the top row's first two columns are labeled 'x' and 'y'.]
+
+3. [Run the following script for all of ('OA', 'ICA', 'ICA2', etc.):
+```bash
+python scripts/rename_masks.py --folder_path ('OA', 'ICA', 'ICA2', etc.)
+```
+]
+
+4. [Run the following script next for all of ('OA', 'ICA', 'ICA2', etc.):
+```bash
+python scripts/load_data_to_data.py --input_folder ('OA', 'ICA', 'ICA2', etc.)
+```
+]
 
 
+To train, run: 
+```bash
+python train.py --amp --classes 3
+```
+
+Similarly, when predicting also add the arguments "--classes 3". Add the model path as well.
+
+
+To visualize a single mask with matplotlib, run:
+```bash
+python scripts/visualize_mask.py --mask_path ('path to mask here')
+```
+Only the centers will appear for masks that have a center, and only boundaries will appear for masks without a center. Closing the matplotlib window will lead to the np.unique() values to be printed to terminal console.
+
+
+Old:
 # U-Net: Semantic segmentation with PyTorch
 <a href="#"><img src="https://img.shields.io/github/actions/workflow/status/milesial/PyTorch-UNet/main.yml?logo=github&style=for-the-badge" /></a>
 <a href="https://hub.docker.com/r/milesial/unet"><img src="https://img.shields.io/badge/docker%20image-available-blue?logo=Docker&style=for-the-badge" /></a>

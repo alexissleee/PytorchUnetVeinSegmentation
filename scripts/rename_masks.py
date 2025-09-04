@@ -1,10 +1,20 @@
 from pathlib import Path
 import re
+import argparse
 
 # Folders
+parser = argparse.ArgumentParser(description="Rename masks.")
+parser.add_argument(
+    "--folder_path",
+    type=str,
+    required=True,
+    help="Path to the folder containing imgs and masks."
+)
+args = parser.parse_args()
+
 # make sure to run this from your root directory
-img_dir = Path("./ICA/imgs/")
-mask_dir = Path("./ICA/masks/")
+img_dir = Path(f"{args.folder_path}/imgs")
+mask_dir = Path(f"{args.folder_path}/masks")
 
 
 print("Images found:", list(img_dir.glob("*.bmp")))
