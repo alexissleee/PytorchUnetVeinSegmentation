@@ -11,3 +11,7 @@ venv/
 wandb/
 *.DS_Store
 conda_unet_env/
+/*.bmp
+/*.png
+/*.jpg
+/*.jpeg
