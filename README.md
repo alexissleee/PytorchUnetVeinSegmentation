@@ -20,13 +20,17 @@ python scripts/rename_masks.py --folder_path ('OA', 'ICA', 'ICA2', etc.)
 python scripts/load_data_to_data.py --input_folder ('OA', 'ICA', 'ICA2', etc.)
 ```
 
+To activate the virtual environment from the ZeissPC server, run the following:
+```bash
+conda activate .\conda_unet_env\
+```
 
 To train, run: 
 ```bash
 python train.py --amp --classes 3
 ```
 
-Similarly, when predicting also add the arguments "--classes 3". Add the model path as well.
+Similarly, when predicting also add the arguments "--classes 3" and the model path.
 
 
 To visualize a single mask with matplotlib, run:
@@ -47,17 +51,19 @@ Closing the matplotlib window will lead to the counts of the np.unique() values 
 
 Customized implementation of the [U-Net](https://arxiv.org/abs/1505.04597) in PyTorch for Kaggle's [Carvana Image Masking Challenge](https://www.kaggle.com/c/carvana-image-masking-challenge) from high definition images.
 
-- [Quick start](#quick-start)
-  - [Without Docker](#without-docker)
-  - [With Docker](#with-docker)
-- [Description](#description)
-- [Usage](#usage)
-  - [Docker](#docker)
-  - [Training](#training)
-  - [Prediction](#prediction)
-- [Weights & Biases](#weights--biases)
-- [Pretrained model](#pretrained-model)
-- [Data](#data)
+- [PytorchUnetVeinSegmentation](#pytorchunetveinsegmentation)
+- [(From Original Repo) U-Net: Semantic segmentation with PyTorch](#from-original-repo-u-net-semantic-segmentation-with-pytorch)
+  - [Quick start](#quick-start)
+    - [Without Docker](#without-docker)
+    - [With Docker](#with-docker)
+  - [Description](#description)
+  - [Usage](#usage)
+    - [Docker](#docker)
+    - [Training](#training)
+    - [Prediction](#prediction)
+  - [Weights \& Biases](#weights--biases)
+  - [Pretrained model](#pretrained-model)
+  - [Data](#data)
 
 ## Quick start
 
