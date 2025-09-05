@@ -40,6 +40,16 @@ python scripts/visualize_mask.py --mask_path ('path to mask here')
 Closing the matplotlib window will lead to the counts of the np.unique() values to be printed to terminal console.
 
 
+An original image is given as:
+![Original bmp](./original_069_ICA.png)
+
+With its corresponding labeled mask as:
+![Labeled image](./069_ICA_labeled_mask.png)
+
+Running predict.py with a model after 5 epochs of training results in the following:
+![Predicted segmentation](./069_ICA_mask_predicted.png)
+
+
 # (From Original Repo) U-Net: Semantic segmentation with PyTorch
 <a href="#"><img src="https://img.shields.io/github/actions/workflow/status/milesial/PyTorch-UNet/main.yml?logo=github&style=for-the-badge" /></a>
 <a href="https://hub.docker.com/r/milesial/unet"><img src="https://img.shields.io/badge/docker%20image-available-blue?logo=Docker&style=for-the-badge" /></a>
