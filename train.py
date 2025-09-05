@@ -21,10 +21,36 @@ from utils.dice_score import dice_loss
 
 import numpy as np
 import cv2
+import scipy.ndimage as ndi
 
 dir_img = Path('./data/imgs/')
 dir_mask = Path('./data/masks/')
 dir_checkpoint = Path('./checkpoints/')
+
+
+def halo_loss(pred_logits, true_masks, radius=15, penalty_weight=0.5):
+    """
+    Penalize predictions of class 1 that are far away from class 2.
+    pred_logits: (B, C, H, W) raw outputs
+    true_masks:  (B, H, W) ground truth
+    """
+    B, C, H, W = pred_logits.shape
+    probs = F.softmax(pred_logits, dim=1)  # (B, C, H, W)
+    p_class1 = probs[:, 1, :, :]  # predicted prob for class 1
+
+    penalty = torch.zeros_like(p_class1)
+
+    for b in range(B):
+        mask = true_masks[b].cpu().numpy()
+        # distance transform: distance to nearest class 2 pixel
+        dist_map = ndi.distance_transform_edt(mask != 2)
+        # build penalty mask: 1 if farther than radius
+        bad_region = (dist_map > radius).astype(np.float32)
+        penalty[b] = torch.from_numpy(bad_region).to(p_class1.device)
+
+    # penalize class 1 probability in "bad regions"
+    halo_penalty = (p_class1 * penalty).mean()
+    return penalty_weight * halo_penalty
 
 
 def train_model(
@@ -113,6 +139,8 @@ def train_model(
                             F.one_hot(true_masks, model.n_classes).permute(0, 3, 1, 2).float(),
                             multiclass=True
                         )
+                        # add halo loss: penalize stray class 1
+                        loss += halo_loss(masks_pred, true_masks, radius=15, penalty_weight=0.5)
 
                 optimizer.zero_grad(set_to_none=True)
                 grad_scaler.scale(loss).backward()
@@ -219,14 +247,18 @@ if __name__ == '__main__':
     pixel_counts = np.zeros(model.n_classes, dtype=np.float64)
 
     for mask_file in mask_files:
+        print(mask_file)
         mask = cv2.imread(str(mask_file), cv2.IMREAD_UNCHANGED)
         values, counts = np.unique(mask, return_counts=True)
         for v, c in zip(values, counts):
             pixel_counts[int(v)] += c
     
     weights = 1.0 / pixel_counts
+    weights[0] = weights[0] * 5
+    weights[1] = weights[1] / 2
+    weights[2] = weights[2] / 5
     # normalize, maybe delete later
-    weights = weights / weights.sum()
+    # weights = weights / weights.sum()
 
     weights_tensor = torch.tensor(weights, dtype=torch.float32)
 
@@ -258,3 +290,4 @@ if __name__ == '__main__':
             val_percent=args.val / 100,
             amp=args.amp
         )
+
