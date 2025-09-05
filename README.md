@@ -8,7 +8,7 @@ Directly uploaded for now since currently don't have that much data, but in the 
 
 1. Download the folder (i.e., 'OA', 'ICA', 'ICA2', etc.) into the root directory of your repository.
 
-2. Make sure the images are saved as bmp files inside an 'imgs' folder within, and the masks as pngs inside a 'masks' folder. Ensure your centers are saved into a 'centers.csv' file, and that the top row's first two columns are labeled 'x' and 'y'.
+2. Make sure the images are saved as bmp files inside an 'imgs' folder within, and the masks as pngs inside a 'masks' folder. Ensure your centers are saved into a 'centers.csv' file, and that the top row's first two columns are labeled 'x1' and 'y1', in that order, and all subsequent columns (if any images have more than one centerpoint) are labeled 'x2' and 'y2', in that order. (So far, the script only handles the case for 1 or 2 centerpoints). Additionally ensure that the row in the csv representing the centerpoint corresponds to 2 + the image number from your dataset.
 
 3. Run the following script for all of ('OA', 'ICA', 'ICA2', etc.):
 ```bash
