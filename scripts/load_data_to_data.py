@@ -175,6 +175,7 @@ for idx, mask_file in enumerate(mask_files):
         x, y = int(row["x1"]), int(row["y1"])
         if 0 <= y < mask.shape[0] and 0 <= x < mask.shape[1]:
             cv2.circle(mask, (x, y), radius=3, color=center_label, thickness=-1)
+            #mask[mask == 3] = 1  # fix overlap artifacts, did this to fix Cube95
     else:
         print(f"No center (x1,y1) for {base_name}, skipping")
 
