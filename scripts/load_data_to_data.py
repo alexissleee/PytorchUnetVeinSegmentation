@@ -204,6 +204,7 @@ for idx, mask_file in enumerate(mask_files):
             x2, y2 = int(row["x2"]), int(row["y2"])
             if 0 <= y2 < mask.shape[0] and 0 <= x2 < mask.shape[1]:
                 cv2.circle(mask, (x2, y2), radius=3, color=center_label, thickness=-1)
+                mask[mask >= 3] = 1  # fix overlap artifacts, did this to fix Cube95
 
     else:
         print(f"No CSV row for {base_name}, mask left without centers")
