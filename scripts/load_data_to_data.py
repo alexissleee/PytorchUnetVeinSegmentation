@@ -112,7 +112,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 input_folder = Path(args.input_folder)
-output_folder = Path("data")
+output_folder = Path("data_with_black_masks") # change
 
 imgs_input_folder = input_folder / "imgs"
 masks_input_folder = input_folder / "masks"
@@ -131,6 +131,7 @@ if not csv_path.exists():
 # --- CHANGED: expect x1,y1 and optionally x2,y2 ---
 try:
     df_centers = pd.read_csv(csv_path)
+    print(len(df_centers))
     df_centers.columns = df_centers.columns.str.strip()
 except pd.errors.ParserError:
     df_centers = pd.read_csv(csv_path, header=None, names=["x1", "y1"])
@@ -161,29 +162,51 @@ for idx, mask_file in enumerate(mask_files):
         mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
 
     # ==== Attach center from CSV (row 2 corresponds to mask 0) ====
-    csv_row_idx = int(base_name)  # row 2 → mask 0
+    csv_row_idx = int(base_name) # row 2 → mask 0
 
-    if csv_row_idx >= len(df_centers):
-        print(f"Skipping center for {base_name}: CSV row {csv_row_idx} out of bounds")
-        continue
+    # if csv_row_idx >= len(df_centers):
+    #     print(f"Skipping center for {base_name}: CSV row {csv_row_idx} out of bounds")
+    #     continue
 
-    row = df_centers.iloc[csv_row_idx]
+    # row = df_centers.iloc[csv_row_idx]
     center_label = 2
 
-    # --- CHANGED: draw first center if valid ---
-    if pd.notna(row["x1"]) and pd.notna(row["y1"]):
-        x, y = int(row["x1"]), int(row["y1"])
-        if 0 <= y < mask.shape[0] and 0 <= x < mask.shape[1]:
-            cv2.circle(mask, (x, y), radius=3, color=center_label, thickness=-1)
-            #mask[mask == 3] = 1  # fix overlap artifacts, did this to fix Cube95
-    else:
-        print(f"No center (x1,y1) for {base_name}, skipping")
+    # # --- CHANGED: draw first center if valid ---
+    # if pd.notna(row["x1"]) and pd.notna(row["y1"]):
+    #     x, y = int(row["x1"]), int(row["y1"])
+    #     if 0 <= y < mask.shape[0] and 0 <= x < mask.shape[1]:
+    #         cv2.circle(mask, (x, y), radius=3, color=center_label, thickness=-1)
+    #         #mask[mask == 3] = 1  # fix overlap artifacts, did this to fix Cube95
+    # else:
+    #     print(f"No center (x1,y1) for {base_name}, skipping")
 
-    # --- CHANGED: draw second center if valid ---
-    if pd.notna(row["x2"]) and pd.notna(row["y2"]):
-        x2, y2 = int(row["x2"]), int(row["y2"])
-        if 0 <= y2 < mask.shape[0] and 0 <= x2 < mask.shape[1]:
-            cv2.circle(mask, (x2, y2), radius=3, color=center_label, thickness=-1)
+    # # --- CHANGED: draw second center if valid ---
+    # if pd.notna(row["x2"]) and pd.notna(row["y2"]):
+    #     x2, y2 = int(row["x2"]), int(row["y2"])
+    #     if 0 <= y2 < mask.shape[0] and 0 <= x2 < mask.shape[1]:
+    #         cv2.circle(mask, (x2, y2), radius=3, color=center_label, thickness=-1)
+
+    # draw centers only if CSV row exists
+    if csv_row_idx < len(df_centers):
+        row = df_centers.iloc[csv_row_idx]
+
+        # Only draw if at least one center is valid
+        if pd.notna(row["x1"]) and pd.notna(row["y1"]):
+            x, y = int(row["x1"]), int(row["y1"])
+            if 0 <= y < mask.shape[0] and 0 <= x < mask.shape[1]:
+                cv2.circle(mask, (x, y), radius=3, color=center_label, thickness=-1)
+                #mask[mask == 3] = 1  # fix overlap artifacts, did this to fix Cube95
+        
+        else:
+            print("No center lol")
+
+        if pd.notna(row["x2"]) and pd.notna(row["y2"]):
+            x2, y2 = int(row["x2"]), int(row["y2"])
+            if 0 <= y2 < mask.shape[0] and 0 <= x2 < mask.shape[1]:
+                cv2.circle(mask, (x2, y2), radius=3, color=center_label, thickness=-1)
+
+    else:
+        print(f"No CSV row for {base_name}, mask left without centers")
 
     # ==== Save processed mask and image ====
     mask_output_path = masks_output_folder / f"{base_name}_{input_folder}_mask.png"
